@@ -48,10 +48,21 @@ let SAMPLE_LEXER =
     "WS: [ \\t\\n\\r\\f]+ -> skip ;";
 
 let SAMPLE_INPUT =
-    "f(x,y) {\n" +
-    "    a = 3+foo;\n" +
-    "    x and y;\n" +
-    "}";
+    // "f(x,y) {\n" +
+    // "    a = 3+foo;\n" +
+    // "    x and y;\n" +
+    // "}";
+    "form x.y;\n" +
+    "\n" +
+    "section A;\n" +
+    "begin\n" +
+    "if x = 1 then\n" +
+    "    B := 1\n" +
+    "else\n" +
+    "    B := 2\n" +
+    ";\n" +
+    "end;\n";
+
 
 
 function processANTLRResults(response) {
@@ -249,6 +260,7 @@ async function run_antlr() {
 function initParseTreeView() {
     $("#svgtreetab").show();
     $("#treetab").show();
+    $("#ambiguitiestab").show();
     let toggler = document.getElementsByClassName("tree-root");
     for (let i = 0; i < toggler.length; i++) {
 	// add event handler to open/close
@@ -460,9 +472,51 @@ function createAceANTLRMode() {
         });
 }
 
+function getParserSample() {
+    const request = new XMLHttpRequest();
+    request.open("GET", "/grammars/FCC_Parser.g4", false); // `false` makes the request synchronous
+    request.send(null);
+
+    if (request.status === 200) {
+        console.log(request.responseText);
+        return request.responseText;
+    }
+    return "";
+}
+
+function getLexerSample() {
+    const request = new XMLHttpRequest();
+    request.open("GET", "/grammars/FCC_Lexer.g4", false); // `false` makes the request synchronous
+    request.send(null);
+
+    if (request.status === 200) {
+        console.log(request.responseText);
+        return request.responseText;
+    }
+    return "";
+}
+
+function getSampleCode() {
+    const request = new XMLHttpRequest();
+    request.open("GET", "/grammars/sample.clc", false); // `false` makes the request synchronous
+    request.send(null);
+
+    if (request.status === 200) {
+        console.log(request.responseText);
+        return request.responseText;
+    }
+    return "";
+}
+
 function createGrammarEditor() {
-    var parserSession = ace.createEditSession(SAMPLE_PARSER);
-    var lexerSession = ace.createEditSession(SAMPLE_LEXER);
+    var parserText = getParserSample();
+    var lexerText = getLexerSample();
+
+    var parserSession = ace.createEditSession(parserText);
+    var lexerSession = ace.createEditSession(lexerText);
+
+    //var parserSession = ace.createEditSession(SAMPLE_PARSER);
+    //var lexerSession = ace.createEditSession(SAMPLE_LEXER);
     var editor = ace.edit("grammar");
 
     $("#grammar").data("parserSession", parserSession);
@@ -507,8 +561,10 @@ function removeAllMarkers(session) {
 }
 
 function createInputEditor() {
+    var codeText = getSampleCode();
+
     var input = ace.edit("input");
-    let session = ace.createEditSession(SAMPLE_INPUT);
+    let session = ace.createEditSession(codeText);
     $("#input").data("session", session);
     $("#input").data("editor", input);
     input.setSession(session);
@@ -560,22 +616,37 @@ function setupGrammarTabs(editor) {
 function setupTreeTabs() {
     $("#svgtreetab").hide();
     $("#treetab").hide();
+    $("#ambiguitiestab").hide();
     $("#svgtreetab").addClass("tabs-header-selected");
     $("#treetab").removeClass("tabs-header-selected");
+    $("#ambiguitiestab").removeClass("tabs-header-selected");
     $("#svgtree").show();
     $("#tree").hide();
+    $("#ambiguities").hide();
 
     $("#svgtreetab").click(function () {
         $("#svgtree").show();
         $("#tree").hide();
+        $("#ambiguities").hide();
         $("#svgtreetab").addClass("tabs-header-selected");
         $("#treetab").removeClass("tabs-header-selected");
+        $("#ambiguitiestab").removeClass("tabs-header-selected");
     });
     $("#treetab").click(function () {
         $("#svgtree").hide();
         $("#tree").show();
+        $("#ambiguities").hide();
         $("#svgtreetab").removeClass("tabs-header-selected");
         $("#treetab").addClass("tabs-header-selected");
+        $("#ambiguitiestab").removeClass("tabs-header-selected");
+    });
+    $("#ambiguitiestab").click(function () {
+        $("#svgtree").hide();
+        $("#tree").hide();
+        $("#ambiguities").show();
+        $("#svgtreetab").removeClass("tabs-header-selected");
+        $("#treetab").removeClass("tabs-header-selected");
+        $("#ambiguitiestab").addClass("tabs-header-selected");
     });
 }
 

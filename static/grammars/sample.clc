@@ -1,0 +1,10 @@
+form x.y;
+
+section A;
+begin
+    if x = 1 then
+        B := 1
+    else
+        B := 2
+    ;
+end;
