@@ -70,12 +70,16 @@ class CollectLexOrParseSyntaxErrors extends BaseErrorListener {
         {
             array.add(s.toString());
         }
+
+        TokenStream tokenStream = recognizer.getTokenStream();
+        Token startToken = tokenStream.get(startIndex);
+
         err.add("dfaStates", array);
         err.addProperty("startidx", startIndex);
         err.addProperty("stopidx", stopIndex);
         err.addProperty("erridx", stopIndex);
-        err.addProperty("line", 1);
-        err.addProperty("pos", 1);
+        err.addProperty("line", startToken.getLine());
+        err.addProperty("pos", startToken.getCharPositionInLine());
         err.addProperty("msg", msg);
         
         msgs.add(err);
@@ -97,12 +101,15 @@ class CollectLexOrParseSyntaxErrors extends BaseErrorListener {
         {
             array.add(s.toString());
         }
+        TokenStream tokenStream = recognizer.getTokenStream();
+        Token startToken = tokenStream.get(startIndex);
+
         err.add("dfaStates", array);
         err.addProperty("startidx", startIndex);
         err.addProperty("stopidx", stopIndex);
         err.addProperty("erridx", stopIndex);
-        err.addProperty("line", 1);
-        err.addProperty("pos", 1);
+        err.addProperty("line", startToken.getLine());
+        err.addProperty("pos", startToken.getCharPositionInLine());
         err.addProperty("msg", msg);
         
         msgs.add(err);
@@ -124,12 +131,15 @@ class CollectLexOrParseSyntaxErrors extends BaseErrorListener {
         {
             array.add(s.toString());
         }
+        TokenStream tokenStream = recognizer.getTokenStream();
+        Token startToken = tokenStream.get(startIndex);
+
         err.add("dfaStates", array);
         err.addProperty("startidx", startIndex);
         err.addProperty("stopidx", stopIndex);
         err.addProperty("erridx", stopIndex);
-        err.addProperty("line", 1);
-        err.addProperty("pos", 1);
+        err.addProperty("line", startToken.getLine());
+        err.addProperty("pos", startToken.getCharPositionInLine());
         err.addProperty("msg", msg);
         
         msgs.add(err);

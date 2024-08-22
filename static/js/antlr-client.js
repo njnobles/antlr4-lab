@@ -48,20 +48,10 @@ let SAMPLE_LEXER =
     "WS: [ \\t\\n\\r\\f]+ -> skip ;";
 
 let SAMPLE_INPUT =
-    // "f(x,y) {\n" +
-    // "    a = 3+foo;\n" +
-    // "    x and y;\n" +
-    // "}";
-    "form x.y;\n" +
-    "\n" +
-    "section A;\n" +
-    "begin\n" +
-    "if x = 1 then\n" +
-    "    B := 1\n" +
-    "else\n" +
-    "    B := 2\n" +
-    ";\n" +
-    "end;\n";
+    "f(x,y) {\n" +
+    "    a = 3+foo;\n" +
+    "    x and y;\n" +
+    "}";
 
 
 

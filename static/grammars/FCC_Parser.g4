@@ -594,13 +594,14 @@ statementWithSemicolon
 statement
    :  nonIfStatement # statement_nonIfStatement
    |  ifStatement # statement_if
+   |  loopStatement # statement_loop
    ;
 
 nonIfStatement
    :  codeBlock # statement_codeBlock
    |  assignmentStatement # statement_assignment
    |  caseStatement # statement_case
-   |  KW_WHILE whileStatement # statement_while
+   //|  KW_WHILE whileStatement # statement_while
    |  repeatStatement # statement_repeat
    //|  forStatement # statement_for
    //|  forEachStatement # statement_forEach
@@ -614,6 +615,12 @@ nonIfStatement
       /**************  eRROR rULES  *************/
    |  procBlockHeader # statement_procBlockHeader
    |  error # statement_error
+   ;
+
+loopStatement
+   :  KW_WHILE whileStatement # statement_while
+   |  forStatement # statement_for
+   |  forEachStatement # statement_forEach
    ;
 
 
@@ -648,7 +655,7 @@ assignmentStatement
    
 ifStatement
    //:  KW_IF condition KW_THEN (nonIfStatement KW_ELSE elseStatementBody=statement | statement) // not ambiguous w/o loops (at least simple if-else)
-   :  KW_IF condition KW_THEN (nonIfStatement (KW_ELSE elseStatementBody=statement)? | ifStatement) // not ambiguous w/o loops (at least simple if-else)
+   :  KW_IF condition KW_THEN ((nonIfStatement | loopStatement) (KW_ELSE elseStatementBody=statement)? | ifStatement) // not ambiguous w/o loops (at least simple if-else)
    //:  KW_IF condition KW_THEN ifStatementBody=statement (KW_ELSE elseStatementBody=statement)? //ambiguous regardless
    //:  KW_IF condition KW_THEN ifStatementBody=statement
    //|  KW_IF condition KW_THEN ifStatementBody=statement KW_ELSE elseStatementBody=statement
