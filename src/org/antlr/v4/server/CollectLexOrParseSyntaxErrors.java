@@ -63,7 +63,7 @@ class CollectLexOrParseSyntaxErrors extends BaseErrorListener {
 								ATNConfigSet configs)
 	{
         final JsonObject err = new JsonObject();
-        String msg = "reportAmbiguity | rulename: " + recognizer.getRuleNames()[dfa.atnStartState.ruleIndex];
+        String msg = " reportAmbiguity | rulename: " + recognizer.getRuleNames()[dfa.atnStartState.ruleIndex];
         List<DFAState> states = dfa.getStates();
         JsonArray array = new JsonArray();
         for(DFAState s : states)
@@ -73,6 +73,12 @@ class CollectLexOrParseSyntaxErrors extends BaseErrorListener {
 
         TokenStream tokenStream = recognizer.getTokenStream();
         Token startToken = tokenStream.get(startIndex);
+
+        Token stopToken = tokenStream.get(stopIndex);
+        int stopLine = stopToken.getLine();
+        int stopPosition = stopToken.getCharPositionInLine() + stopToken.getText().length();
+
+        msg = " --> " + String.valueOf(stopLine) + ":" + String.valueOf(stopPosition) + msg;
 
         err.add("dfaStates", array);
         err.addProperty("startidx", startIndex);
@@ -94,7 +100,7 @@ class CollectLexOrParseSyntaxErrors extends BaseErrorListener {
 											ATNConfigSet configs)
 	{
         final JsonObject err = new JsonObject();
-        String msg = "reportAttemptingFullContext | rulename: " + recognizer.getRuleNames()[dfa.atnStartState.ruleIndex];
+        String msg = " reportAttemptingFullContext | rulename: " + recognizer.getRuleNames()[dfa.atnStartState.ruleIndex];
         List<DFAState> states = dfa.getStates();
         JsonArray array = new JsonArray();
         for(DFAState s : states)
@@ -103,6 +109,12 @@ class CollectLexOrParseSyntaxErrors extends BaseErrorListener {
         }
         TokenStream tokenStream = recognizer.getTokenStream();
         Token startToken = tokenStream.get(startIndex);
+
+        Token stopToken = tokenStream.get(stopIndex);
+        int stopLine = stopToken.getLine();
+        int stopPosition = stopToken.getCharPositionInLine() + stopToken.getText().length();
+
+        msg = " --> " + String.valueOf(stopLine) + ":" + String.valueOf(stopPosition) + msg;
 
         err.add("dfaStates", array);
         err.addProperty("startidx", startIndex);
@@ -124,7 +136,7 @@ class CollectLexOrParseSyntaxErrors extends BaseErrorListener {
 										 ATNConfigSet configs)
 	{
         final JsonObject err = new JsonObject();
-        String msg = "reportContextSensitivity | rulename: " + recognizer.getRuleNames()[dfa.atnStartState.ruleIndex];
+        String msg = " reportContextSensitivity | rulename: " + recognizer.getRuleNames()[dfa.atnStartState.ruleIndex];
         List<DFAState> states = dfa.getStates();
         JsonArray array = new JsonArray();
         for(DFAState s : states)
@@ -134,6 +146,11 @@ class CollectLexOrParseSyntaxErrors extends BaseErrorListener {
         TokenStream tokenStream = recognizer.getTokenStream();
         Token startToken = tokenStream.get(startIndex);
 
+        Token stopToken = tokenStream.get(stopIndex);
+        int stopLine = stopToken.getLine();
+        int stopPosition = stopToken.getCharPositionInLine() + stopToken.getText().length();
+
+        msg = " --> " + String.valueOf(stopLine) + ":" + String.valueOf(stopPosition) + msg;
         err.add("dfaStates", array);
         err.addProperty("startidx", startIndex);
         err.addProperty("stopidx", stopIndex);

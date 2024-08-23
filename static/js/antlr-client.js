@@ -723,4 +723,6 @@ $(document).ready(function() {
 
     setUpDragAndDrop();
     setupSelectGrammarTable();
+
+    run_antlr();
 });
