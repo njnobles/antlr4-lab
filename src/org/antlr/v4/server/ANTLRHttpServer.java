@@ -145,7 +145,7 @@ public class ANTLRHttpServer {
     public static void main(String[] args) throws Exception {
         new File(IMAGES_DIR).mkdirs();
 
-        Files.createDirectories(Path.of("/var/log/antlrlab"));
+        Files.createDirectories(Path.of("log/antlrlab"));
         QueuedThreadPool threadPool = new QueuedThreadPool();
         threadPool.setMaxThreads(10);
         threadPool.setName("server");
@@ -153,7 +153,7 @@ public class ANTLRHttpServer {
         Server server = new Server(threadPool);
 
         ServerConnector http = new ServerConnector(server);
-        http.setPort(80);
+        http.setPort(8080);
 
         server.addConnector(http);
 
