@@ -137,6 +137,7 @@ function processANTLRResults(response) {
     let parse_errors = result.parse_errors;
 
     let profile = result.profile;
+    let parse_time = result.parse_time;
 
     let charToChunk = chunkifyInput(I, tokens, symbols, lex_errors, parse_errors);
     $("#input").data("charToChunk", charToChunk);
@@ -190,7 +191,44 @@ function processANTLRResults(response) {
 
     initParseTreeView();
 
+    let parse_time_html = "<span id='parse_time_header' class='chunk-header'><br>Total Parse Time:</span>\n";
+    parse_time_html += "<span id='parse_time_header' class='chunk-header'>";
+    let duration = formatDuration(parse_time);
+    parse_time_html += duration;
+    parse_time_html += "</span>\n";
+    $("#parse_time").html(parse_time_html)
+
     buildProfileTableView(profile.colnames, profile.data);
+}
+
+function formatDuration(duration)
+{
+   let total_ms = duration;
+   let total_s = Math.floor(total_ms / 1000);
+   let total_min = Math.floor(total_s / 60);
+   let total_hour = Math.floor(total_min / 60);
+
+   let partial_min = total_min % 60;
+   let partial_s = total_s % 60;
+   let partial_ms = total_ms % 1000;
+
+   let hour_str = total_hour.toString();
+   let min_str = partial_min.toString();
+   let s_str = partial_s.toString();
+   let ms_str = partial_ms.toString();
+
+   if (hour_str.length == 1)
+      hour_str = "0" + hour_str;
+   if (min_str.length == 1)
+      min_str = "0" + min_str;
+   if (s_str.length == 1)
+      s_str = "0" + s_str;
+   if (ms_str.length == 1)
+      ms_str = "00" + ms_str;
+   if (ms_str.length == 2)
+      ms_str = "0" + ms_str;
+
+   return hour_str + ":" + min_str + ":" + s_str + "." + ms_str;
 }
 
 function walk(t, result, input, buf) {
@@ -227,6 +265,7 @@ function walk(t, result, input, buf) {
 }
 
 async function run_antlr() {
+    $(".run-button").css({ "background-color": "grey", "cursor": "not-allowed" });
     let parserSession = $("#grammar").data("parserSession")
     let lexerSession = $("#grammar").data("lexerSession")
     let g = parserSession.getValue()
@@ -244,6 +283,9 @@ async function run_antlr() {
             if( error.response ){
                 console.log(error.response.data); // => the response payload
             }
+        })
+        .finally(() => {
+            $(".run-button").css({ "background-color": "", "cursor": "" });
         });
 }
 

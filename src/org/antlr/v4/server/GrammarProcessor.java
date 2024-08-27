@@ -30,7 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GrammarProcessor {
-    public static final int MAX_PARSE_TIME_MS = 20 * 1000; // 20 seconds
+    public static final int MAX_PARSE_TIME_MS = 3 * 60 * 1000; // 3 min
 
     private static class KillableGrammarParserInterpreter extends GrammarParserInterpreter {
         private final long creationTime = System.currentTimeMillis();
@@ -133,10 +133,12 @@ public class GrammarProcessor {
 
         Rule r = g.rules.get(startRule);
         ParseTree t = parser.parse(r.index);
-        ParseInfo parseInfo = parser.getParseInfo();
 
         long now = System.currentTimeMillis();
-        LOGGER.info("PARSE TIME: "+(now - parser.creationTime)+"ms");
+        long parseTime = now - parser.creationTime;
+        LOGGER.info("PARSE TIME: " + parseTime + "ms");
+
+        ParseInfo parseInfo = parser.getParseInfo();
 
 //        System.out.println("lex msgs" + lexListener.msgs);
 //        System.out.println("parse msgs" + parseListener.msgs);
@@ -154,7 +156,8 @@ public class GrammarProcessor {
                 inputStream,
                 lexListener.msgs,
                 parseListener.msgs,
-                profileData);
+                profileData,
+                parseTime);
     }
 
     /** Copy this function from {@link Grammar} so we can override {@link ParserInterpreter#visitState(ATNState)} */ 
@@ -190,6 +193,12 @@ public class GrammarProcessor {
     }
 
     public static String toSVG(Tree t, List<String> ruleNames) throws IOException {
+        if(t.toStringTree().length() > 1000000) {
+            return "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" height=\"30\" width=\"800\">\n" +
+                    "  <text x=\"0\" y=\"15\" fill=\"red\">Can't create SVG tree; Tree too large: "+t.toStringTree().length()+"</text>\n" +
+                    "</svg>";
+        }
+
         long id = Thread.currentThread().getId();
         String psFileName = "temp-"+id+".ps";
         String pdfFileName = "temp-"+id+".pdf";
